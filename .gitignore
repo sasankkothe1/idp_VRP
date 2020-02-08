@@ -27,4 +27,4 @@ yarn-error.log*
 node_modules
 
 # hiding the config file that contains the google api key
-src/config.js
+src/mapconfig.js
