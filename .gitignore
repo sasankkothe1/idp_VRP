@@ -25,3 +25,6 @@ yarn-error.log*
 
 # Nodemodules of the react app
 node_modules
+
+# hiding the config file that contains the google api key
+src/config.js
