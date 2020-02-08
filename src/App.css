@@ -1,3 +1,8 @@
 .App {
-  display: flex;
+    display: flex;
+    flex-direction: column;
 }
+
+html, body {
+    height: 100%; /*Fixes the height to 100% of the viewport*/
+  }
