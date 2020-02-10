@@ -38,7 +38,7 @@ export default class MapView extends Component {
 
   handleApiLoaded(map, maps) {
 
-    console.log("handle api loaded : +++" + map)
+    //console.log("handle api loaded : +++" + map)
     let DirectionsRenderer = new google.maps.DirectionsRenderer({
       map: map
     });
@@ -51,7 +51,6 @@ export default class MapView extends Component {
 
   }
   showroute() {
-    //console.log(MapStore.getUserOptions());
     let UserOptions = MapStore.getUserOptions();
     this.setState({
       UserOptions: UserOptions
@@ -62,7 +61,13 @@ export default class MapView extends Component {
       {
         origin: UserOptions.source,
         destination: UserOptions.destination,
-        travelMode: UserOptions.travelmode
+        travelMode: UserOptions.travelmode,
+        drivingOptions : {
+          departureTime : new Date((UserOptions.time).getTime())
+        },
+        transitOptions : {
+          departureTime : new Date((UserOptions.time).getTime())
+        }
       },
       (result, status) => {
         if (status === google.maps.DirectionsStatus.OK) {

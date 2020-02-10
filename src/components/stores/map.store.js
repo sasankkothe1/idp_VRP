@@ -24,6 +24,8 @@ class MapStore extends EventEmitter {
                 break;
             case 'GOT_DIRECTIONS':
                 this.setDirecitonRenderer(action.value);
+                break;
+            default: break;
         }
         this.emitChange(action.actionType);
 

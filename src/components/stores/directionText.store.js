@@ -20,6 +20,8 @@ class DirectionTextStore extends EventEmitter {
         switch(action.actionType) {
             case 'GOT_DIRECTIONS':
                 this.setDirecitonRenderer(action.value);
+                break;
+            default: break;
         }
         this.emitChange(action.actionType);
 

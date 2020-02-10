@@ -18,7 +18,7 @@ export default class MapForm extends Component {
         source: "",
         destination: "",
         time: "",
-        travelmode: ""
+        travelmode: "",
       },
       directionsRenderer : null
     };
@@ -62,11 +62,13 @@ export default class MapForm extends Component {
   }
 
   onChangeTime(e) {
-    let time = e.getHours() + ":" + e.getMinutes() + ":" + e.getSeconds();
+    //let time = e.getHours() + ":" + e.getMinutes() + ":" + e.getSeconds();
+    //let time = e.getTime();
+    //console.log(time)
     this.setState(prevState => ({
       userOptions: {
         ...prevState.userOptions,
-        time: time
+        time: e
       }
     }));
   }
@@ -100,7 +102,7 @@ export default class MapForm extends Component {
           <Form.Group>
             <Form.Label>Travelling to</Form.Label>
             <GooglePlacesAutocomplete
-              placeholder="Source"
+              placeholder="Destination"
               inputClassName="form-control"
               onSelect={this.handleDestination}
             />
