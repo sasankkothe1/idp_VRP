@@ -1,16 +1,25 @@
+
+
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const mini_depot_routes = express.Router();
+const findDirectionFunction = require('./functions/findDirection.function.js');
+require("dotenv").config();
+
 const PORT = 4000;
 
 let mini_depot = require('./models/mini_depot.model');
 
+
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 
+
+const mini_depot_routes = express.Router();
+const get_direction_routes = express.Router();
 
 mongoose.connect('mongodb://localhost:27017/IDP' , {useNewUrlParser : true});
 const conneciton  = mongoose.connection;
@@ -21,6 +30,15 @@ conneciton.once('open', ()=> {
 
 
 app.use("/mini_depots",mini_depot_routes);
+app.use("/getDirections",get_direction_routes);
+
+
+get_direction_routes.route('/').post((req, res) => {
+    console.log(req.body);
+    findDirectionFunction(req.body, process.env.GOOGLE_MAPS_API_KEY);
+    res.status(200);
+    res.json("got the directions");
+})
 
 
 mini_depot_routes.route('/mini_depot_list').get((req, res)=> {

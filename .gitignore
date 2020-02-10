@@ -29,5 +29,8 @@ node_modules
 # Nodemodules in the backend folder
 backend/node_modules
 
+#.env from the backend folder
+backend/.env
+
 # hiding the config file that contains the google api key
 src/mapconfig.js

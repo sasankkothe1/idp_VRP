@@ -84,8 +84,8 @@ export default class MapForm extends Component {
   }
 
   handleFormValues() {
-    //console.log(this.state.userOptions);
     ShowRouteAction.showroute(this.state.userOptions);
+    
   }
   render() {
     return (
