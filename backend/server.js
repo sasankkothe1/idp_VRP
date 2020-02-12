@@ -33,11 +33,11 @@ app.use("/mini_depots",mini_depot_routes);
 app.use("/getDirections",get_direction_routes);
 
 
-get_direction_routes.route('/').post((req, res) => {
-    console.log(req.body);
-    findDirectionFunction(req.body, process.env.GOOGLE_MAPS_API_KEY);
+get_direction_routes.route('/').post( async (req, res) => {
+   var directions = await findDirectionFunction(req.body, process.env.GOOGLE_MAPS_API_KEY)
+    //console.log(directions)
     res.status(200);
-    res.json("got the directions");
+    res.json(directions);
 })
 
 
