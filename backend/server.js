@@ -1,14 +1,15 @@
 
-
+const dbConnect = require("./utils/mongodb.utils");
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const mongoose = require("mongoose");
 const findDirectionFunction = require('./functions/findDirection.function.js');
 require("dotenv").config();
 
 const PORT = 4000;
+
+dbConnect.connectDataBase ('mongodb://localhost:27017/IDP');
 
 let mini_depot = require('./models/mini_depot.model');
 
@@ -21,12 +22,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 const mini_depot_routes = express.Router();
 const get_direction_routes = express.Router();
 
-mongoose.connect('mongodb://localhost:27017/IDP' , {useNewUrlParser : true});
-const conneciton  = mongoose.connection;
 
-conneciton.once('open', ()=> {
-    console.log("mongodb is connected");
-})
 
 
 app.use("/mini_depots",mini_depot_routes);
