@@ -8,7 +8,7 @@ const findDirection = async (userOptions, googleMapsKey) => {
     params: {
       origin: userOptions.source,
       destination: userOptions.destination,
-      departure_time: new Date(userOptions.time),
+      departure_time: new Date().getTime(), //this is the present time when user enters the options
       mode: userOptions.travelmode,
       key: googleMapsKey
     },
