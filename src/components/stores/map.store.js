@@ -4,7 +4,7 @@ import {EventEmitter} from 'events';
 import MapDispatcher from '../dispatchers/map.dispatcher';
 
 let _store = {
-    userOptions : null,
+    finalRoute : null,
     directionsRenderer : null
 }
 
@@ -20,7 +20,7 @@ class MapStore extends EventEmitter {
     async dispatcherCallback(action) {
         switch(action.actionType) {
             case 'SHOW_ROUTE':
-                this.setUserOptions(action.value);
+                this.setFinalRoute(action.value);
                 break;
             case 'GOT_DIRECTIONS':
                 this.setDirecitonRenderer(action.value);
@@ -33,12 +33,12 @@ class MapStore extends EventEmitter {
 
     }
 
-    setUserOptions(userOptions){
-        _store.userOptions = userOptions;
+    setFinalRoute(finalRoute){
+        _store.finalRoute = finalRoute;
     }
 
-    getUserOptions(){
-        return _store.userOptions;
+    getFinalRoute(){
+        return _store.finalRoute;
     }
 
     setDirecitonRenderer(directionsRenderer) {

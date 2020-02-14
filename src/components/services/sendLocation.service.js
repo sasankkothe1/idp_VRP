@@ -13,8 +13,8 @@ export default class SendLocationService {
     static async sendUserOptions(userOptions){
         let getDirection = await axios.post(SendLocationService.baseURL() + "/", userOptions);
         if (getDirection.status===200){
-            //console.log("hello")
-            console.log(getDirection);
+            console.log(getDirection.data)
+            return getDirection.data
         } else {
             console.log(getDirection.message);
         }

@@ -21,7 +21,8 @@ export default class MapView extends Component {
       directions: null,
       map : null,
       maps : null,
-     directionsRenderer : null
+     directionsRenderer : null,
+     finalRoute : null
     };
     this.showroute = this.showroute.bind(this);
     this.handleApiLoaded = this.handleApiLoaded.bind(this);
@@ -51,22 +52,38 @@ export default class MapView extends Component {
 
   }
   showroute() {
-    let UserOptions = MapStore.getUserOptions();
+    let finalRoute = MapStore.getFinalRoute();
     this.setState({
-      UserOptions: UserOptions
+      finalRoute: finalRoute
     });
     let DirectionsService = new google.maps.DirectionsService();
     let DirectionsRenderer = this.state.directionsRenderer;
+    let finalSoure = new google.maps.LatLng(this.state.finalRoute.source.lat, this.state.finalRoute.source.lng);
+    let finalDestination = new google.maps.LatLng(this.state.finalRoute.destination.lat, this.state.finalRoute.destination.lng);
+    let waypoints = [];
+    //console.log(finalDestination + " +++++++ + " + finalSoure + "+++++++++++" + this.state.finalRoute.waypoints.length) 
+    if(this.state.finalRoute.waypoints.length === 0 ) {
+      console.log("no waypoints")
+    } else {
+      let state_waypoints = this.state.finalRoute.waypoints;
+      for(let i = 0; i<state_waypoints.length; i++) {
+        let curr_waypoint = state_waypoints[i];
+        waypoints.push({
+          location : new google.maps.LatLng(curr_waypoint.lat , curr_waypoint.lng)
+        })
+      }
+    }
     DirectionsService.route(
       {
-        origin: UserOptions.source,
-        destination: UserOptions.destination,
-        travelMode: UserOptions.travelmode,
+        origin: finalSoure,
+        destination: finalDestination,
+        travelMode: finalRoute.travelMode,
+        waypoints : waypoints,
         drivingOptions : {
-          departureTime : new Date((UserOptions.time).getTime())
+          departureTime : new Date()
         },
         transitOptions : {
-          departureTime : new Date((UserOptions.time).getTime())
+          departureTime : new Date()
         }
       },
       (result, status) => {
