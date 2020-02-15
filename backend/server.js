@@ -19,30 +19,11 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-
 const mini_depot_routes = express.Router();
 const get_direction_routes = express.Router();
 
-
-
-
 app.use("/mini_depots",mini_depot_routes);
 app.use("/getDirections",get_direction_routes);
-
-
-// get_direction_routes.route('/').post( async (req, res) => {
-//     var time1 = (new Date((req.body.time))).getTime();
-//     console.log((new Date((req.body.time))).getTime());
-//    var directions = await findDirectionFunction(req.body, process.env.GOOGLE_MAPS_API_KEY);
-//    console.log(directions.data.routes[0].legs);
-//    var time2 = (new Date()).getTime();
-//    console.log((new Date((req.body.time))).getTime());
-//    console.log(time2)
-//    console.log(time1>time2)
-//     //console.log(directions.data.routes[0].legs[0].steps)
-//     res.status(200);
-//     //res.json(directions);
-// })
 
 
 get_direction_routes.route('/').post( async (req, res) => { 
@@ -100,21 +81,6 @@ get_direction_routes.route('/').post( async (req, res) => {
         res.status(200).send(finalRouteToUser)
     } else res.status(400)
 })
-
-// mini_depot_routes.route('/:id').get((req, res)=> {
-//    // console.log("this is by ID method")
-//     let id = req.params.id;
-//     mini_depot.findById(id, (err, mini_depot)=> {
-//         console.log(mini_depot)
-//         if(err){
-//             console.log(err);
-//         } else {
-//             res.json(mini_depot);
-//         }
-//     });
-// });
-
-
 
 app.listen(PORT , () => {
     console.log("server is running on the port : " + PORT);

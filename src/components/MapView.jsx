@@ -79,6 +79,7 @@ export default class MapView extends Component {
         destination: finalDestination,
         travelMode: finalRoute.travelMode,
         waypoints : waypoints,
+        optimizeWaypoints: true,
         drivingOptions : {
           departureTime : new Date()
         },
