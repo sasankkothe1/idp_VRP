@@ -3,48 +3,38 @@ import React, { Component } from "react";
 import { Form, Button } from "react-bootstrap";
 import TimeInput from "material-ui-time-picker";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import DirectionTextStore from "./stores/directionText.store";
-import ShowRouteAction from "./actions/showRoute.actions"
-import "react-google-places-autocomplete/dist/assets/index.css";
 
-export default class MapForm extends Component {
+
+export default class AddCourier extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      userOptions: {
+      courierOptions: {
         source: "",
         destination: "",
-        time: "",
-        travelmode: "",
+        deliveryDate: ""
       },
       directionsRenderer : null
     };
     this.handleSource = this.handleSource.bind(this);
     this.handleDestination = this.handleDestination.bind(this);
-    this.onChangeTime = this.onChangeTime.bind(this);
-    this.handletravelmode = this.handletravelmode.bind(this);
+    this.onChangeTime = this.onChangeDeliveryDate.bind(this);
     this.handleFormValues = this.handleFormValues.bind(this);
-    this.setDirectionText = this.setDirectionText.bind(this);
     
   }
 
   componentDidMount() {
-    DirectionTextStore.addChangeListener("GOT_DIRECTIONS", this.setDirectionText);
+    
   }
 
   setDirectionText(){
-    let directionsRenderer = DirectionTextStore.getDirecitonRenderer();
-    this.setState({
-      directionsRenderer : directionsRenderer
-    })
-    directionsRenderer.setPanel(document.getElementById('directionsText'));
   }
 
   handleSource(e) {
     this.setState(prevState => ({
-      userOptions: {
-        ...prevState.userOptions,
+      courierOptions: {
+        ...prevState.courierOptions,
         source: e.description
       }
     }));
@@ -52,21 +42,18 @@ export default class MapForm extends Component {
 
   handleDestination(e) {
     this.setState(prevState => ({
-      userOptions: {
-        ...prevState.userOptions,
+      courierOptions: {
+        ...prevState.courierOptions,
         destination: e.description
       }
     }));
   }
 
-  onChangeTime(e) {
-    //let time = e.getHours() + ":" + e.getMinutes() + ":" + e.getSeconds();
-    //let time = e.getTime();
-    //console.log(time)
+  onChangeDeliveryDate(e) {
     this.setState(prevState => ({
-      userOptions: {
-        ...prevState.userOptions,
-        time: e
+      courierOptions: {
+        ...prevState.courierOptions,
+        deliveryDate: e
       }
     }));
   }
@@ -74,20 +61,20 @@ export default class MapForm extends Component {
   handletravelmode(e) {
     e.persist();
     this.setState(prevState => ({
-      userOptions: {
-        ...prevState.userOptions,
+      courierOptions: {
+        ...prevState.courierOptions,
         travelmode: e.target.value
       }
     }));
   }
 
   handleFormValues() {
-    ShowRouteAction.showroute(this.state.userOptions);
+   
     
   }
   render() {
     return (
-      <div className="mapForm">
+      <div className="addCourier">
         <Form>
           <Form.Group>
             <Form.Label>Travelling from</Form.Label>
@@ -106,23 +93,13 @@ export default class MapForm extends Component {
             />
           </Form.Group>
           <Form.Group>
-            <Form.Label>Free Until</Form.Label>
+            <Form.Label>Should be delivered on</Form.Label>
             {/* <Form.Control type="text" placeholder="Select the time" /> */}
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <TimeInput mode="24h" onChange={this.onChangeTime} />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>How are you travelling</Form.Label>
-            <Form.Control as="select" onChange={this.handletravelmode}>
-              <option value="WALKING">Walking</option>
-              <option value="BICYCLING">Bicycling</option>
-              <option value="TRANSIT">Transit</option>
-              <option value="DRIVING">Driving</option>
-            </Form.Control>
+            <TimeInput mode="24h" onChange={this.onChangeDeliveryDate} />
           </Form.Group>
         </Form>
         <Button
-          block
           variant="primary"
           type="submit"
           onClick={this.handleFormValues}
