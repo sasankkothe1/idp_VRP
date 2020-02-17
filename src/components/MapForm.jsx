@@ -60,9 +60,6 @@ export default class MapForm extends Component {
   }
 
   onChangeTime(e) {
-    //let time = e.getHours() + ":" + e.getMinutes() + ":" + e.getSeconds();
-    //let time = e.getTime();
-    //console.log(time)
     this.setState(prevState => ({
       userOptions: {
         ...prevState.userOptions,

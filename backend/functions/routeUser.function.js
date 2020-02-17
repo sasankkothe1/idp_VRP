@@ -3,13 +3,32 @@ const client = new googleClient({});
 const geolib = require('geolib');
 const findDirectionFunction = require('./findDirection.function');
 
-const routeUser =  async (travelMode, freetime, source, destination, steps, mini_depots_objs, googleMapsKey) => {
+const routeUser =  async (couriers_list, travelMode, freetime, source, destination, steps, mini_depots_objs, userTime, googleMapsKey) => {
     var mini_depots_objs_order = geolib.orderByDistance(source, mini_depots_objs);
     var final_mini_depots = []
     var i = 0;
     var s = source;
     var waypoints = [];
-    while(freetime > 300000) {
+
+    //sort the couriers list according to the date of delivery
+    var latest_couriers_list = couriers_list.sort((a,b) => {
+        return new Date(a.deliveryDate).getTime() - new Date(b.deliveryDate).getTime()
+    });
+
+    for(var i=0 ; i<latest_couriers_list.length; i++) {
+       var curr_deliverable_courier = await findDirectionFunction.findDeliverableCourier(source, destination, latest_couriers_list[i], process.env.GOOGLE_MAPS_API_KEY);
+       if ((curr_deliverable_courier.traveltime + new Date().getTime()) < (userTime + 300000)) {
+           console.log("true")
+           console.log(userTime)
+           freetime = freetime - 600000
+           waypoints.push({lat : curr_deliverable_courier.courier.source.lat , lng:curr_deliverable_courier.courier.source.lng} , {lat : curr_deliverable_courier.courier.destination.lat , lng:curr_deliverable_courier.courier.destination.lng})
+           break;
+       } else {
+           console.log("false")
+       }
+    }
+    console.log(freetime)
+    while(freetime > 1200000) {
         var curr_depot = {
             lat :mini_depots_objs_order[i].latitude,
             lng: mini_depots_objs_order[i].longitude
@@ -21,7 +40,7 @@ const routeUser =  async (travelMode, freetime, source, destination, steps, mini
         final_mini_depots.push(mini_depots_objs[i])
         i++;
     }
-
+   
 
     var finalroute = {
         source : source,
@@ -34,18 +53,3 @@ const routeUser =  async (travelMode, freetime, source, destination, steps, mini
 }
 
 module.exports = {routeUser}
-
-    // console.log(directions.data.routes[0].legs[0])
-    // console.log(freetime);
-    // console.log(source);
-    // console.log(destination);
-    // console.log(steps);
-    // console.log(mini_depots_objs);
-    // console.log(googleMapsKey);
-
-//    console.log(geolib.isPointWithinRadius(
-//         {latitude : source.latitude, longitude : source.longitude},
-//         {latitude : destination.latitude, longitude : destination.longitude },
-//         5000
-//     ))
-

@@ -1,0 +1,6 @@
+.addMiniDepot{
+    display: flex;
+    flex-direction: column;
+    padding-top: 4em;
+    height: 100vh;
+}

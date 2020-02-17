@@ -13,6 +13,7 @@ const PORT = 4000;
 dbConnect.connectDataBase ('mongodb://localhost:27017/IDP');
 
 let mini_depot = require('./models/mini_depot.model');
+let courier = require('./models/courier.model');
 
 
 app.use(cors());
@@ -33,12 +34,6 @@ get_direction_routes.route('/').post( async (req, res) => {
     var travelTime = directions.data.routes[0].legs[0].duration.value * 1000;
     var timeNow = (new Date()).getTime();
     var freeTime = userTime - (timeNow + travelTime);
-    // if(freeTime > 900000) {   //if free time is more than 15 mins then detour....
-    //     console.log("detour possible");
-    // }
-    // else {
-    //     console.log("detour is not possible");
-    // }
     let steps = [];
     let directionSteps = directions.data.routes[0].legs[0].steps;
     for(var i = 0; i < directionSteps.length ; i++) {
@@ -56,7 +51,15 @@ get_direction_routes.route('/').post( async (req, res) => {
                 return mini_depots
             }
         });
-    
+
+    //getting all the couriers from the backend MongoDB
+    var couriers_list = await courier.find((err, couriers) => {
+        if(err){
+            console.log(err)
+        } else {
+            return couriers
+        }
+    })    
     var mini_depots_objs = [];
 
     for(var i = 0; i < mini_depots_list.length; i++) {
@@ -76,7 +79,7 @@ get_direction_routes.route('/').post( async (req, res) => {
         lng : directions.data.routes[0].legs[0].end_location.lng
     }
 
-    var finalRouteToUser = await routeUserfunction.routeUser(travelMode, freeTime, source, destination, steps, mini_depots_objs, process.env.GOOGLE_MAPS_API_KEY);
+    var finalRouteToUser = await routeUserfunction.routeUser(couriers_list, travelMode, freeTime, source, destination, steps, mini_depots_objs, userTime, process.env.GOOGLE_MAPS_API_KEY);
     if(finalRouteToUser !== null) {
         res.status(200).send(finalRouteToUser)
     } else res.status(400)

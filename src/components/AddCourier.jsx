@@ -11,15 +11,17 @@ export default class AddCourier extends Component {
 
     this.state = {
       courierOptions: {
+        name :"",
         source: "",
         destination: "",
         deliveryDate: ""
       },
-      directionsRenderer : null
+
     };
+    this.handleName = this.handleName.bind(this);
     this.handleSource = this.handleSource.bind(this);
     this.handleDestination = this.handleDestination.bind(this);
-    this.onChangeTime = this.onChangeDeliveryDate.bind(this);
+    this.onChangeDeliveryDate = this.onChangeDeliveryDate.bind(this);
     this.handleFormValues = this.handleFormValues.bind(this);
     
   }
@@ -29,6 +31,16 @@ export default class AddCourier extends Component {
   }
 
   setDirectionText(){
+  }
+
+  handleName(e) {
+      let name = e.target.value
+      this.setState(prevState => ({
+          courierOptions : {
+              ...prevState.courierOptions,
+              name: name
+          }
+      }))
   }
 
   handleSource(e) {
@@ -58,26 +70,22 @@ export default class AddCourier extends Component {
     }));
   }
 
-  handletravelmode(e) {
-    e.persist();
-    this.setState(prevState => ({
-      courierOptions: {
-        ...prevState.courierOptions,
-        travelmode: e.target.value
-      }
-    }));
-  }
 
   handleFormValues() {
-   
-    
+      console.log(this.state.courierOptions)
   }
   render() {
     return (
       <div className="addCourier">
         <Form>
+        <Form.Group>
+            <Form.Label>Courier Name </Form.Label>
+            <Form.Control type="text"
+                placeholder="Courier Name"
+                onChange={this.handleName}></Form.Control>
+          </Form.Group>
           <Form.Group>
-            <Form.Label>Travelling from</Form.Label>
+            <Form.Label>Source </Form.Label>
             <GooglePlacesAutocomplete
               placeholder="Source"
               inputClassName="form-control"
@@ -85,7 +93,7 @@ export default class AddCourier extends Component {
             />
           </Form.Group>
           <Form.Group>
-            <Form.Label>Travelling to</Form.Label>
+            <Form.Label>Destination</Form.Label>
             <GooglePlacesAutocomplete
               placeholder="Destination"
               inputClassName="form-control"
@@ -93,7 +101,7 @@ export default class AddCourier extends Component {
             />
           </Form.Group>
           <Form.Group>
-            <Form.Label>Should be delivered on</Form.Label>
+            <Form.Label>Should be delivered before</Form.Label>
             {/* <Form.Control type="text" placeholder="Select the time" /> */}
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <TimeInput mode="24h" onChange={this.onChangeDeliveryDate} />
@@ -104,10 +112,9 @@ export default class AddCourier extends Component {
           type="submit"
           onClick={this.handleFormValues}
         >
-          Let's go
+          Generate Courier
         </Button>
-        <div id="directionsText"></div>
-      </div>
+        </div>
     );
   }
 }

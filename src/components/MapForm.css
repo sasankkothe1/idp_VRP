@@ -1,9 +1,12 @@
 .mapForm{
     flex: 1;
-    height: 100vh;
+  
+    display: flex;
+    flex-flow: column;
 }
 
 #directionsText {
     height: 400px;
     overflow: scroll;
+    flex-grow: 1;
 }

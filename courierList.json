@@ -1,0 +1,36 @@
+[{
+  "_id": "courier1",
+  "source": {
+    "lat": 48.14683,
+    "lng": 11.543907
+  },
+  "destination": {
+    "lat": 48.171184,
+    "lng": 11.584951
+  },
+  "deliveryDate": "2020-02-20T17:30:00.000"
+},
+{
+    "_id": "courier2",
+    "source": {
+      "lat": 48.128957,
+      "lng": 11.586332
+    },
+    "destination": {
+      "lat": 48.132295,
+      "lng": 11.599560
+    },
+    "deliveryDate": "2020-02-18T20:10:00.000"
+  },
+  {
+    "_id": "courier3",
+    "source": {
+      "lat": 48.135864,
+      "lng": 11.537373
+    },
+    "destination": {
+      "lat": 48.148750,
+      "lng": 11.545615
+    },
+    "deliveryDate": "2020-02-22T23:20:00.000"
+  }]

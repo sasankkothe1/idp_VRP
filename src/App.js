@@ -10,7 +10,8 @@ import './components/Nav.css';
 import './components/Main.css';
 import './components/MapView.css';
 import './components/MapForm.css';
-import './components/AddCourier.css'
+import './components/AddCourier.css';
+import './components/AddMiniDepot.css';
 
 function App() {
   return (
