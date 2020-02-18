@@ -9,37 +9,61 @@ const routeUser =  async (couriers_list, travelMode, freetime, source, destinati
     var i = 0;
     var s = source;
     var waypoints = [];
+    var message = null;
 
     //sort the couriers list according to the date of delivery
     var latest_couriers_list = couriers_list.sort((a,b) => {
         return new Date(a.deliveryDate).getTime() - new Date(b.deliveryDate).getTime()
     });
 
+    var miniDepotsNearToRoute = findDirectionFunction.findMiniDepotsNearToRoute(source, destination, steps, mini_depots_objs)
+
     for(var i=0 ; i<latest_couriers_list.length; i++) {
-       var curr_deliverable_courier = await findDirectionFunction.findDeliverableCourier(source, destination, latest_couriers_list[i], process.env.GOOGLE_MAPS_API_KEY);
-       if ((curr_deliverable_courier.traveltime + new Date().getTime()) < (userTime + 300000)) {
-           console.log("true")
-           console.log(userTime)
-           freetime = freetime - 600000
-           waypoints.push({lat : curr_deliverable_courier.courier.source.lat , lng:curr_deliverable_courier.courier.source.lng} , {lat : curr_deliverable_courier.courier.destination.lat , lng:curr_deliverable_courier.courier.destination.lng})
-           break;
-       } else {
-           console.log("false")
-       }
-    }
-    console.log(freetime)
-    while(freetime > 1200000) {
-        var curr_depot = {
-            lat :mini_depots_objs_order[i].latitude,
-            lng: mini_depots_objs_order[i].longitude
+        var object = await findDirectionFunction.ifSourceDeliverableUnderUserTime(source, destination, userTime, latest_couriers_list[i], process.env.GOOGLE_MAPS_API_KEY);
+        if(object.canBeDelivered === true) {  //Change this back to if true
+            var c_source = {
+                lat : latest_couriers_list[i].source.lat,
+                lng : latest_couriers_list[i].source.lng
+            }
+            var c_destination = {
+                lat : latest_couriers_list[i].destination.lat,
+                lng : latest_couriers_list[i].destination.lng
+            }
+            waypoints.push(c_source); waypoints.push(c_destination);
+            break;
         }
-        var distanceTimeObj = await findDirectionFunction.findTimeAndDistanceBetweenPoints(s, curr_depot, travelMode, googleMapsKey);
-        freetime = freetime - distanceTimeObj.traveltime;
-        s = curr_depot;
-        waypoints.push(curr_depot);
-        final_mini_depots.push(mini_depots_objs[i])
-        i++;
+        else {
+            findDirectionFunction.wait(4000);
+            var miniDepotsNearToCourierDestination = findDirectionFunction.findMiniDepotsNearToCourierDestination(miniDepotsNearToRoute,latest_couriers_list[i]); //under 3kms
+            if(miniDepotsNearToCourierDestination === null) {
+                message = "No couriers are available. You are being routed via mini depots.";
+                break;
+            } else {
+                var courier_source = {
+                    lat : latest_couriers_list[i].source.lat,
+                    lng : latest_couriers_list[i].source.lng
+                }
+                var mini_depot = {
+                    lat : miniDepotsNearToCourierDestination.latitude,
+                    lng : miniDepotsNearToCourierDestination.longitude
+                }
+                waypoints.push(courier_source); waypoints.push(mini_depot);
+            }
+            
+        }
     }
+    // while(freetime > 1200000) {
+    //     var curr_depot = {
+    //         lat :mini_depots_objs_order[i].latitude,
+    //         lng: mini_depots_objs_order[i].longitude
+    //     }
+    //     var distanceTimeObj = await findDirectionFunction.findTimeAndDistanceBetweenPoints(s, curr_depot, travelMode, googleMapsKey);
+    //     freetime = freetime - distanceTimeObj.traveltime;
+    //     s = curr_depot;
+    //     waypoints.push(curr_depot);
+    //     final_mini_depots.push(mini_depots_objs[i])
+    //     i++;
+    // }
    
 
     var finalroute = {

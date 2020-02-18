@@ -3,13 +3,19 @@ import React, { Component } from "react";
 import { Form, Button } from "react-bootstrap";
 import TimeInput from "material-ui-time-picker";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import AddCourierAction from "./actions/addCourier.action";
+import Geocode from "react-geocode";
+import MapConfig from "../mapconfig";
 
+Geocode.setApiKey(MapConfig.GOOGLE_MAPS_API_KEY);
+Geocode.setLanguage("en");
 
 export default class AddCourier extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      date : new Date(),
       courierOptions: {
         name :"",
         source: "",
@@ -23,6 +29,7 @@ export default class AddCourier extends Component {
     this.handleDestination = this.handleDestination.bind(this);
     this.onChangeDeliveryDate = this.onChangeDeliveryDate.bind(this);
     this.handleFormValues = this.handleFormValues.bind(this);
+    this.onChangeDeliveryDates = this.onChangeDeliveryDates.bind(this);
     
   }
 
@@ -31,6 +38,11 @@ export default class AddCourier extends Component {
   }
 
   setDirectionText(){
+  }
+
+  onChangeDeliveryDates(date) {
+    console.log("hi")
+    console.log(date)
   }
 
   handleName(e) {
@@ -68,11 +80,42 @@ export default class AddCourier extends Component {
         deliveryDate: e
       }
     }));
+
+    console.log(this.state.courierOptions.deliveryDate)
   }
 
 
-  handleFormValues() {
-      console.log(this.state.courierOptions)
+  async handleFormValues() {
+      let courier_source_location = this.state.courierOptions.source;
+      let courier_destination_location = this.state.courierOptions.destination;
+      let results_source = await Geocode.fromAddress(courier_source_location).then(response => {
+        return response;
+      })
+      let results_destination = await Geocode.fromAddress(courier_destination_location).then(response => {
+        return response;
+      })
+
+      let courier_source_lat = results_source.results[0].geometry.location.lat;
+      let courier_source_lng = results_source.results[0].geometry.location.lng;
+
+      let courier_destination_lat = results_destination.results[0].geometry.location.lat;
+      let courier_destination_lng = results_destination.results[0].geometry.location.lng;
+
+      let finalCourierOption = null;
+      finalCourierOption = {
+        _id : this.state.courierOptions.name,
+        source : {
+          lat : courier_source_lat,
+          lng : courier_source_lng
+        },
+        destination : {
+          lat : courier_destination_lat,
+          lng : courier_destination_lng
+        },
+        deliveryDate : ""+this.state.courierOptions.deliveryDate
+      }
+
+      AddCourierAction.addCourier(finalCourierOption);
   }
   render() {
     return (

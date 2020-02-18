@@ -22,9 +22,14 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 const mini_depot_routes = express.Router();
 const get_direction_routes = express.Router();
+const add_mini_depot_routes = express.Router();
+const add_courier_routes = express.Router();
 
 app.use("/mini_depots",mini_depot_routes);
 app.use("/getDirections",get_direction_routes);
+app.use("/addMiniDepot",add_mini_depot_routes);
+app.use("/addCourier",add_courier_routes);
+
 
 
 get_direction_routes.route('/').post( async (req, res) => { 
@@ -83,6 +88,32 @@ get_direction_routes.route('/').post( async (req, res) => {
     if(finalRouteToUser !== null) {
         res.status(200).send(finalRouteToUser)
     } else res.status(400)
+})
+
+add_mini_depot_routes.route("/").post(async (req,res) => {
+    console.log("reached backend");
+    let new_mini_depot = new mini_depot(req.body);
+    new_mini_depot.save()
+                  .then(mini_depot => {
+                      console.log("saved")
+                      res.status(200).send({"Message" : "Mini Depot added successfully"})
+                  })
+                  .catch(err => {
+                      console.log("not saved")
+                      res.status(400).send('adding mini depot failed');
+                  }) 
+});
+
+add_courier_routes.route("/").post(async (req,res) => {
+    let new_courier = new courier(req.body);
+    new_courier.save()
+               .then(courier_added_new => {
+                res.status(200).send({"Message" : "Courier added successfully"})
+               })
+               .catch(err => {
+                console.log("not saved")
+                res.status(400).send('adding courier failed');
+            }) 
 })
 
 app.listen(PORT , () => {
