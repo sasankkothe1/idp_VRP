@@ -30,7 +30,7 @@ Ensure that **Google maps api key*** is included in the above code.
 
 7. To run the frontend, go to the parent folder and run `npm start`. By this time, a browser should open and open the web application. If it doesn't open, please type in the following URL in the browser `http://localhost:3000/`
 
-###About the database installation###
+### About the database installation
 
 There is no need to install the database into the localhost. The database is already configured in the online [MongoDB Atlas Cloud](https://www.mongodb.com/cloud/atlas). 
 
