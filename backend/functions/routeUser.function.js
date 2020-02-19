@@ -30,15 +30,19 @@ const routeUser =  async (couriers_list, travelMode, freetime, source, destinati
                 lng : latest_couriers_list[i].destination.lng
             }
             waypoints.push(c_source); waypoints.push(c_destination);
+            freetime = freetime - object.traveltime;
             break;
         }
         else {
-            findDirectionFunction.wait(4000);
+            findDirectionFunction.wait(3000);
             var miniDepotsNearToCourierDestination = findDirectionFunction.findMiniDepotsNearToCourierDestination(miniDepotsNearToRoute,latest_couriers_list[i]); //under 3kms
-            if(miniDepotsNearToCourierDestination === null) {
+            if(miniDepotsNearToCourierDestination == null) {
+                console.log("this is undefined")
                 message = "No couriers are available. You are being routed via mini depots.";
                 break;
             } else {
+                console.log("nearest mini depots")
+                console.log(miniDepotsNearToCourierDestination)
                 var courier_source = {
                     lat : latest_couriers_list[i].source.lat,
                     lng : latest_couriers_list[i].source.lng
@@ -52,18 +56,18 @@ const routeUser =  async (couriers_list, travelMode, freetime, source, destinati
             
         }
     }
-    // while(freetime > 1200000) {
-    //     var curr_depot = {
-    //         lat :mini_depots_objs_order[i].latitude,
-    //         lng: mini_depots_objs_order[i].longitude
-    //     }
-    //     var distanceTimeObj = await findDirectionFunction.findTimeAndDistanceBetweenPoints(s, curr_depot, travelMode, googleMapsKey);
-    //     freetime = freetime - distanceTimeObj.traveltime;
-    //     s = curr_depot;
-    //     waypoints.push(curr_depot);
-    //     final_mini_depots.push(mini_depots_objs[i])
-    //     i++;
-    // }
+    while(freetime > 4800000) {
+        var curr_depot = {
+            lat :mini_depots_objs_order[i].latitude,
+            lng: mini_depots_objs_order[i].longitude
+        }
+        var distanceTimeObj = await findDirectionFunction.findTimeAndDistanceBetweenPoints(s, curr_depot, travelMode, googleMapsKey);
+        freetime = freetime - distanceTimeObj.traveltime;
+        s = curr_depot;
+        waypoints.push(curr_depot);
+        final_mini_depots.push(mini_depots_objs[i])
+        i++;
+    }
    
 
     var finalroute = {
