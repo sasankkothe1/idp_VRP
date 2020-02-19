@@ -6,11 +6,14 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const findDirectionFunction = require('./functions/findDirection.function.js');
 const routeUserfunction = require('./functions/routeUser.function.js');
+const uri = require('./utils/mongodburi').getURI();
 require("dotenv").config();
 
 const PORT = 4000;
 
-dbConnect.connectDataBase ('mongodb://localhost:27017/IDP');
+const dbURI = "mongodb+srv://idp123:idp123@idp-n6nj8.mongodb.net/IDP?retryWrites=true&w=majority";
+
+dbConnect.connectDataBase (dbURI);
 
 let mini_depot = require('./models/mini_depot.model');
 let courier = require('./models/courier.model');
@@ -100,6 +103,7 @@ add_mini_depot_routes.route("/").post(async (req,res) => {
                   })
                   .catch(err => {
                       console.log("not saved")
+                      console.log(err)
                       res.status(400).send('adding mini depot failed');
                   }) 
 });
@@ -111,7 +115,8 @@ add_courier_routes.route("/").post(async (req,res) => {
                 res.status(200).send({"Message" : "Courier added successfully"})
                })
                .catch(err => {
-                console.log("not saved")
+                //console.log("not saved")
+                console.log(err)
                 res.status(400).send('adding courier failed');
             }) 
 })
